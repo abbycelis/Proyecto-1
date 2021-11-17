@@ -2,12 +2,8 @@
 title: "EJERCICIOS EN M"
 author: "Abby Celis"
 date: "16/11/2021"
-output: EJERCICIOS MARKDOWN GRUPO
+output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # EJERCICIOS EN MARKDOWN
 
@@ -22,8 +18,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 #### b) 
-
-You can also embed plots, for example:
 
 ```{r}
 (5^6)*exp(-5)/factorial(6)
@@ -74,11 +68,11 @@ Grupo_A <- length(grupo)
 
 #### b) ¿En qué posiciones del vector está la letra “A?”
 
-```{r}
+```{r, echo = FALSE}
 which(grupo == "A")
 ```
 
-### 4. El vector -nota- representa la nota de un examen de los alumnos que están en los grupos del vector -grupo-.
+### 4. El vector -nota- representa la nota de un examen de los alumnos que están en los grupos del vector -grupo-
 
 #### a) ¿Cuanto suman todas las notas?
 
@@ -211,12 +205,6 @@ mean(conc)
 head(sort(conc),10)
 ```
 
-#### e) Si la primera medida fue a las 00:00. ¿A qué hora del día se alcanzó la concentración máxima?
-
-```{r}
-which(conc[max(conc)])
-```
-
 ## PARTE 2
 
 ### 1. Graficar los puntos (1,1),(2,4),(3,6),(4,8),(5,25),(6,36),(7,49),(8,64),(9,81),(10,100) en un plano utilizando RStudio.
@@ -332,19 +320,6 @@ co2
 data("sunspot.year")
 sunspot.year
 ```
-
-# 14. Lee el archivo rainfall.csv como un data.frame
-
-```{r}
-df <- read.csv("C:/Users/abby_/OneDrive/Desktop/CICLO IV/PROGRAMACIÓN/rainfall.csv",sep = ";" )
-df
-csv_A <- df$num.altitude.sep.oct.nov.dec.jan.feb.mar.apr.may.name.x_utm.y_utm
-data.frame(csv_A)
-read.table("C:/Users/abby_/OneDrive/Desktop/CICLO IV/PROGRAMACIÓN/rainfall.csv",sep = ";" )EJERCICIOS
-```
-
-
-
 
 
 
