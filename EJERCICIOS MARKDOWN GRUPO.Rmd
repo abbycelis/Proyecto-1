@@ -1,4 +1,15 @@
+---
+title: "Ejercicios"
+author: "Abby Celis"
+date: "18/11/2021"
+output: github_document
+---
+
 # EJERCICIOS EN MARKDOWN
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ## PARTE 1
 
