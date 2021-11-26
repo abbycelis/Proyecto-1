@@ -1,0 +1,162 @@
+---
+title: "Tarea 2"
+author: "Abby Celis"
+date: "24/11/2021"
+output: github_document
+---
+TAREA 2 MARKDOWN GRUPO 5
+
+# Ejercicio 1
+
+## ¿Qúe cantidad de dinero sobra al repartir 10000$ entre 3 personas? 
+
+```{r}
+10000 %% 3
+```
+
+# Ejercicio 2
+
+## ¿Es el ńumero 4560 divisible por 3?
+
+```{r}
+4560 %% 3
+```
+
+# Ejercicio 3
+
+## Construya un vector con los ńumeros enteros del 2 al 87. ¿Cu ́ales de esos ńumeros son divisibles por 7?
+
+```{r}
+x <- 2:87
+x [x%%7== 0]
+```
+
+# Ejercicio 4
+
+## Construya dos vectores, el primero con los ńumeros enteros desde 7 hasta 3, el segundo vector con los primeros cinco ńumeros positivos divisibles por 5.
+
+```{r}
+c(3:7)
+c(0,5,10,15,20)
+```
+
+# Ejercicio 5 
+
+## Consulte este link en el cual hay una ańectoda de Gauss n ̃no. Use R para obtener el resultado de la suma solicitada por el profesor del nĩno Gauss.
+
+```{r}
+x <- 1:100
+sum(x)
+```
+
+# Ejercicio 6
+
+## Construya un vector con los siguientes elementos: 1, -4, 5, 9, -4. Escriba un procedimiento para extraer las posiciones donde est́a el valor m ́ınimo en el vector.
+
+```{r}
+Vec <- c(1,-4,5,9,-4)
+which.min(Vec)
+```
+
+# Ejercicio 7
+
+## Calcular 8!
+
+```{r}
+factorial(8)
+```
+
+# Ejercicio 8
+
+## Evaluar la siguiente sumatoria
+
+```{r}
+sumatoria <- c(3,4,5,6,7)
+for (x in sumatoria) {
+  exponente <- exp(x)
+  print(exponente)
+}
+```
+
+# Ejercicio 9
+
+## Evaluar la siguiente productoria 
+
+```{r}
+x<- log(sqrt(1)):log(sqrt(10))
+prod(x)
+```
+
+# Ejercicio 10
+
+## Realizar una función que permita calcular el área de una corona circular.
+
+```{r}
+Areacorona <- function(x,y){
+  ((x)^2)/2*(y-sin(y))
+}
+Areacorona(4,pi/4)
+```
+
+# Ejercicio 11
+
+# Construya un vector cualquiera e inviertalo, es decir, que el primer elemento quede dé ultimo, el segundo de penúltimo y así sucesivamente. Compare su resultado con el de la funcíon rev
+
+```{r}
+sort(c(1:10),decreasing = T)
+vector_11 <- c(1:10)
+sort(vector_11,decreasing = T)
+rev(vector_11)
+```
+
+# Ejercicio 12
+
+## Calcular lo siguiente
+
+```{r}
+n <-c(10:100)
+n^3+(4*n^2)
+sum(n^3+(4*n^2))
+```
+     
+# Ejercicio 13
+
+## Calcular lo siguiente
+
+```{r}
+i <- 1:25
+1:25
+n <- (2^i)/i
+o <- (3^i)/i^2
+
+sum(o+n)
+```
+
+# Ejercicio 14
+
+## Lea el siguiente archivo
+
+```{r}
+datos <- read.csv("https://raw.githubusercontent.com/fhernanb/datos/master/Paises.txt")
+datos
+
+```
+
+# Ejercicio 15
+
+## En R hay unas bases de datos incluídas, una de ellas es la base de datos llamada mtcars. Para conocer las variables que están en mtcars usted puede escribir en la consola ?mtcars o también help(mtcars). De la base mtcars obtenga bases de datos que cumplan las siguientes condiciones.
+
+```{r}
+mtcars
+```
+
+# Ejercicio 16
+
+## La ecuacíon de tiempo es la diferencia entre el tiempo solar medio y el tiempo solar aparente (Referencia). Si bien esta varía, la forma analítica de esta ecuación se muestra a continuación (Usar x como un rango de 0 a 365). Replicar el gr ́afico:
+
+```{r}
+plot(x= c(1:13), y= 1:13, main='Ecuación del tiempo',
+     sub='', 
+     xlab='Meses',
+     ylab='Minutos', col=1:25, pch=1:25)
+```
