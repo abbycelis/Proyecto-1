@@ -1,0 +1,79 @@
+---
+title: "Parcial de Programación"
+author: "Abby Celis"
+date: "10/12/2021"
+output: github_document
+---
+
+# Parte 1
+
+## 1. Crear una función que permita calcular el ́angulo entre las rectas L1 y L2 teniendo sus pendientes como parámetros. La función debe considerar si estas rectas no se cruzan.
+
+```{r}
+ang_rect <- function(m1, m2){
+  fórmula <- ((m2 - m1)/(1 + m1*m2))
+  return(fórmula)
+}
+```
+
+## 2. Crear una función que grafique un polígono ingresando un dataframe con sus coordenadas este y norte como parámetros. La función debe aceptar dataframes con un máximo de 50 registros, realizar la prueba con las siguientes coordenadas.
+
+```{r}
+data <- data.frame(Codigo = c("A", "B", "C", "D", "E", "F"), 
+                   Este = c(272841.7, 272893.6, 272892.5, 272913.8, 272911.2, 272837.5), 
+                   Norte = c(8666459.9, 8666456.9, 8666446.1, 8666441.5, 8666399.9, 8666407.9))
+pol <- function(x){
+  for(i in 50){
+    c <- x
+    return(plot(c))}
+}
+pol(data)
+
+plot(x, y, "b")
+```
+
+# Parte 2
+
+## El dataset kc house data tiene información de ventas de viviendas entre mayo del 2014 y 2015 en el condado de King, estado de Washington, EEUU. Esta base es empleada es bastante utilizada para ejercicios de regresión. La columna price tiene los precios de las viviendas y las dem ́as son caracter ́ısticas de las casas en venta.
+
+```{r}
+kc <- read.csv("C:/Users/abby_/OneDrive/Desktop/kc_house_data.csv")
+kc
+u <- kc$price
+plot(u,)
+```
+
+## Leer el dataset de frutas dataset-fruits.csv realizar lo siguiente
+
+```{r}
+fr <- read.csv("C:/Users/abby_/OneDrive/Desktop/dataset-fruits.csv")
+fr
+```
+
+### a) Eliminar la columna _id
+
+```{r}
+fr$ï.._id <- NULL
+```
+
+### b) Mostrar un resumen del dataset y explicar a grandes rasgos
+
+```{r}
+str(fr)
+```
+
+## Dado un vector de elementos, recorre por cada uno y compara cada elemento con el siguiente, si el siguiente es menor intercambiamos las posiciones de los elementos en el vector, repetimos el mismo proceso varias veces, en cada iteración “emerge” como una burbuja el siguiente elemento con mayor valor, al final de la primera iteración el menor de todos estará en la primera posición, en la siguiente volvemos a recorrer todo el vector excepto el primero y así de forma sucesiva.
+
+```{r}
+elemntos <- c(5,9,6,4,7,2,3,1,8)
+for(x in elemntos)
+  if(x < x + 1){
+    while (x < x+1) {
+      
+    }
+  }else{
+    print(x)
+  }
+```
+
+

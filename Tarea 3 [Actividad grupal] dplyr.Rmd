@@ -1,0 +1,263 @@
+---
+title: 'Tarea 3 [Actividad grupal]: dplyr'
+author: "Abby Celis"
+date: "13/1/2022"
+output: github_document
+---
+
+# Ejercicios: Tidyverse
+
+## Parte 1: Dplyr - filter
+
+```{r}
+library(tidyverse)
+install.packages("nycflights13")
+library(nycflights13)
+library(dplyr)
+flights
+```
+
+### 1. Encuentra todos los vuelos que:
+
+### Tuvieron un retraso de llegada de dos o más horas
+
+```{r}
+filter(flights, arr_delay >= 120)
+```
+
+### Volaron a Houston (IAH o HOU) 
+
+```{r}
+filter(flights, dest == "IAH" | dest ==  "HOU" )
+```
+
+### Fueron operados por United, American o Delta
+
+```{r}
+# Los códigos de las aerolíneas son "UA", "AA" y "DL"
+filter(flights, carrier %in% c("UA", "AA", "DL"))
+```
+
+### Partieron en invierno del hemisferio sur (julio, agosto y septiembre)
+
+```{r}
+filter(flights, month %in% c(7, 8, 9))
+```
+
+### Llegaron más de dos horas tarde, pero no salieron tarde
+
+```{r}
+filter(flights, dep_delay <= 0 & arr_delay > 120)
+```
+
+### Se retrasaron por lo menos una hora, pero repusieron más de 30 minutos en vuelo
+
+```{r}
+filter(flights, dep_delay >= 60 & dep_delay - arr_delay > 30)
+```
+
+### Partieron entre la medianoche y las 6 a.m. (incluyente)
+
+```{r}
+filter(flights, dep_time %in% c(1:600) | dep_time == 2400 )
+```
+
+## 2. Otra función de dplyr que es útil para usar filtros es between(). ¿Qué hace? ¿Puedes usarla para simplificar el código necesario para responder a los desafíos anteriores?
+
+```{r}
+# Esta función del paquete _dplyr_ permite abreviar la escritura de código que tiene esta estructura `x >= derecha & x <= izquierda` por `between(x, derecha, izquierda).
+
+# Ejemplo: Podemos reescribir el código para encontrar los vuelos que partieron en el invierno del hemisferio sur así:
+
+filter(flights, between(month, 7, 9))
+```
+
+## 3. ¿Cuántos vuelos tienen datos faltantes en horario_salida? ¿Qué otras variables tienen valores faltantes? ¿Qué representan estas filas?
+
+```{r}
+# Se puede buscar datos faltantes con la función "is.na"
+filter(flights, is.na(dep_time))
+```
+
+### 4. ¿Por qué NA^0 no es faltante? ¿Por qué NA | TRUE no es faltante? ¿Por qué FALSE & NA no es faltante? ¿Puedes descubrir la regla general? (¡NA * 0 es un contraejemplo complicado!)
+
+```{r}
+x <- c(NA) 
+is.na(x)
+```
+
+La función `is.na()` determina si falta un valor y devuelve un valor lógico `TRUE` en los casos en que es NA (Not Available). 
+
+```{r}
+x^0
+```
+
+Dado que el NA podría tomar cualquier valor, es práctico pensar que cualquier número (aunque sea muy grande) a la potencia cero es igual a 1.
+
+```{r}
+x | TRUE
+```
+
+Es igual a TRUE pues el NA se entiende como un valor lógico (`TRUE` or `FALSE`) y por lógica proposicional `TRUE` | `TRUE`  y  `FALSE` | `TRUE` es siempre igual a `TRUE`.
+
+```{r}
+x & FALSE
+```
+
+Es igual a `TRUE` pues el NA se entiende como un valor lógico (`TRUE` or `FALSE`) y por lógica proposicional `TRUE`&`FALSE` y `FALSE`&`FALSE` es siempre `FALSE`.
+
+El contraejemplo a la regla general:
+
+```{r}
+x * 0
+```
+
+```{r}
+Inf*0
+```
+
+En este contraejemplo puede ser útil pensar que el `NA` puede tomar cualquier valor, incluso podría ser un número muy grande; el cual al multiplicarse por cero nos da una indeterminación que `R` define como `NaN` (Not a Number). Por otro lado, si el `NA` fuese un valor pequeño, entonces `NA*0` sería igual a cero. Luego, es mejor pensar en `x*0` como un `NA` porque no sabemos en cual de los dos casos anteriores estamos.
+
+## Parte 2: Dplyr - arrange
+
+### 1. ¿Cómo podrías usar arrange() para ordenar todos los valores faltantes al comienzo? (Sugerencia: usa is.na()).
+
+```{r}
+arrange(flights,desc(is.na(air_time)))
+```
+
+### 2. Ordena vuelos para encontrar los vuelos más retrasados. Encuentra los vuelos que salieron más temprano.
+
+```{r}
+arrange(flights, desc(arr_delay))
+```
+
+### 3. Ordena vuelos para encontrar los vuelos más rápidos (que viajaron a mayor velocidad).
+
+```{r}
+arrange(flights,desc(distance/air_time))
+```
+
+### 4. ¿Cuáles vuelos viajaron más lejos? ¿Cuál viajó más cerca?
+
+Vuelos que viajaron más lejos (considerando la distancia en millas entre aeropuertos):
+
+```{r}
+arrange(flights,desc(distance))
+```
+
+Vuelos que viajaron más cerca (considerando la distancia en millas entre aeropuertos):
+
+```{r}
+arrange(flights,distance)
+```
+
+## Parte 3: Dplyr - select
+
+### 1. Haz una lluvia de ideas sobre tantas maneras como sea posible para seleccionar dep_time, dep_delay, arr_time, and arr_delay de flights.
+
+Una primera opción sería seleccionaras por su nombre:
+
+```{r}
+select(flights, dep_time, arr_delay, arr_time, dep_delay)
+```
+
+También es útil en este caso utilizar la función `ends_with()`:
+
+```{r}
+select(flights, ends_with("arr"),ends_with("delay"))
+```
+
+Y una manera adicional es usando la función `contains()`:
+
+```{r}
+select(flights, contains("time"),contains("delay"))
+```
+
+### 2. ¿Qué sucede si incluyes el nombre de una variable varias veces en una llamada a select()?
+
+Al utilizar `select()` esta solo se considerará una vez:
+
+```{r}
+select(flights, dep_time, dep_time, dep_time)
+```
+
+### 3. ¿Qué hace la función any_of()? ¡¿Por qué podría ser útil en conjunto con este vector?
+
+```{r}
+vars <- c ("year", "month", "day", "arr_delay", "dep_delay")
+```
+
+Con la función `one_of()` podemos indicar las variables que queremos seleccionar con el nombre del vector que las contiene.
+
+La función `one_of()` selecciona todas las variables que están en el vector `vars`:
+
+```{r}
+select(flights, one_of(vars))
+```
+
+Sin embargo, es posible también hacerlo de la siguiente forma (Siempre y cuando no exista una variable que se llame `vars` en el set de datos):
+
+```{r}
+select(flights, vars)
+```
+
+## Parte 4: Dplyr - mutate
+
+### 1. Las variables horario_salida y salida_programada tienen un formato conveniente para leer, pero es difícil realizar cualquier cálculo con ellas porque no son realmente números continuos. Transfórmalas hacia un formato más conveniente como número de minutos desde la medianoche.
+
+Los datos de estas variables son de tal forma que las 6:59 AM toman el valor 659. Luego, el número de horas desde la media noche es:
+
+```{r}
+659%/%100 #division entera
+```
+La cantidad de minutos en esas 6 horas:
+
+```{r}
+659%/%100 *60
+```
+
+Solo queda sumar los 59 minutos:
+
+```{r}
+659 %% 100 #resto
+```
+
+Entonces, el número de minutos transcurridos desde las 00:00 hasta las 6:59 AM son:
+
+```{r}
+659 %/% 100 * 60 + 659 %% 100 
+```
+
+Sin embargo, la medianoche toma el valor 24:00 con lo cual el número de minutos desde la medianoche es 1440 en lugar de 0. Para resolver esto usamos nuevamente `%%`.
+
+```{r}
+(659 %/% 100 * 60 + 659 %% 100) %% 1440 #mismo resultado anterior
+(2400 %/% 100 * 60 + 2400 %% 100) %% 1440 #cero minutos desde la medianoche
+```
+
+```{r}
+flights
+mutate(flights, salida_programada_min = (sched_dep_time %/% 100 * 60 + sched_dep_time %% 100) %% 1440)
+mutate(flights, horario_salida_min = (dep_time %/% 100 * 60 + dep_time %% 100) %% 1440)
+```
+
+### 2. Compara tiempo_vuelo con horario_llegada - horario_salida. ¿Qué esperas ver? ¿Qué ves? ¿Qué necesitas hacer para arreglarlo?
+
+Lo que se espera es que `tiempo_vuelo` = `horario_llegada` - `horario_salida`.
+
+### 3. Compara horario_salida, salida_programada, y atraso_salida. ¿Cómo esperarías que esos tres números estén relacionados?
+
+`salida programada` + `atraso_salida` = `horario_salida`
+
+### 5. ¿Qué devuelve 1:3 + 1:10? ¿Por qué?
+
+```{r}
+1:3 + 1:10
+class(1:3 + 1:10)
+# Devuelve un "intenger" ya que la longitud del objeto más largo no es un múltiplo de la longitud del objeto más corto.
+```
+
+### 6. ¿Qué funciones trigonométricas proporciona R?
+
+Seno en R, Coseno en R, Tangente en R y Cotangente en R
