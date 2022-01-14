@@ -10,8 +10,6 @@ output: github_document
 ## Parte 1: Dplyr - filter
 
 ```{r}
-library(tidyverse)
-install.packages("nycflights13")
 library(nycflights13)
 library(dplyr)
 flights
