@@ -8,9 +8,10 @@ output: github_document
 # Ejercicios: ggplot2
 
 ```{r}
-data(millas)
-install.packages("ggplot2")
 library(ggplot2)
+library(tidyverse)
+library(datos)
+millas
 ```
 
 PARTE 1: Ggplot base
@@ -262,26 +263,56 @@ ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
   geom_point()
 ```
 
-```{r}
+Podríamos usar `position = "jitter"` para añadir ruido a nuestros puntos:
 
+```{r}
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_point(position = "jitter")
 ```
 
 ¿Qué parámetros de geom_jitter() controlan la cantidad de ruido?
 
-```{r}
+Parámetros:
 
+width: eje horizontal
+height: eje vertical
+
+```{r}
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_jitter(width = 0)
+
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_jitter(width = 20)
+
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_jitter(height = 0)
+
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_jitter(height = 20)
 ```
 
 Compara y contrasta geom_jitter() con geom_count()
 
 ```{r}
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_jitter()
 
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_count()
+
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista, color = clase)) +
+  geom_count(position = "jitter")
 ```
 
 ¿Cuál es el ajuste de posición predeterminado de geom_boxplot()? Crea una visualización del conjunto de datos de millas que lo demuestre.
 
 ```{r}
+?geom_boxplot()
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista, color = clase)) +
+  geom_boxplot()
 
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista, color = clase)) +
+  geom_boxplot(position = "identity")
 ```
 
 Parte 7: Sistema de coordenadas
@@ -289,19 +320,33 @@ Parte 7: Sistema de coordenadas
 Convierte un gráfico de barras apiladas en un gráfico circular usando coord_polar().
 
 ```{r}
+ggplot(millas, aes(x = factor(1), fill = traccion)) +
+  geom_bar()
 
+ggplot(millas, aes(x = factor(1), fill = traccion)) +
+  geom_bar(width = 1) +
+  coord_polar(theta = "y")
 ```
 
 ¿Qué hace labs()? Lee la documentación.
 
 ```{r}
-
+?labs
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
+  geom_boxplot() +
+  coord_flip() +
+  labs(y = "Millas por galón de combustible en autopista",
+       x = "Tipo de auto",
+       title = "Datos de economía de combustible",
+       subtitle = "1999-2008",
+       caption = "Fuente: http://fueleconomy.gov")
 ```
 
 ¿Cuál es la diferencia entre coord_quickmap() y coord_map()?
 
 ```{r}
-
+?coord_quickmap
+  ?coord_map
 ```
 
 ¿Qué te dice la gráfica siguiente sobre la relación entre ciudad y autopista? ¿Por qué es coord_fixed() importante? ¿Qué hace geom_abline()?
@@ -311,4 +356,9 @@ ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
   geom_point() +
   geom_abline() +
   coord_fixed()
+```
+
+```{r}
+?coord_fixed
+?geom_abline
 ```

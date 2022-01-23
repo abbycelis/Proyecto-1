@@ -1,314 +1,261 @@
 ---
-title: 'Ejercicios: ggplot2'
+title: 'Tarea 3 [Actividad grupal]: dplyr'
 author: "Abby Celis"
-date: "20/1/2022"
+date: "13/1/2022"
 output: github_document
 ---
 
-# Ejercicios: ggplot2
+# Ejercicios: Tidyverse
+
+## Parte 1: Dplyr - filter
 
 ```{r}
-data(millas)
-install.packages("ggplot2")
-library(ggplot2)
+library(nycflights13)
+library(dplyr)
+flights
 ```
 
-PARTE 1: Ggplot base
+### 1. Encuentra todos los vuelos que:
 
-Ejecuta ggplot(data = millas). ¿Qué observas?
+### Tuvieron un retraso de llegada de dos o más horas
 
 ```{r}
-
+filter(flights, arr_delay >= 120)
 ```
 
-¿Cuántas filas hay en millas? ¿Cuántas columnas?
+### Volaron a Houston (IAH o HOU) 
 
 ```{r}
-
+filter(flights, dest == "IAH" | dest ==  "HOU" )
 ```
 
-¿Qué describe la variable traccion? Lee la ayuda de ?millas para encontrar la respuesta.
+### Fueron operados por United, American o Delta
 
 ```{r}
-
+# Los códigos de las aerolíneas son "UA", "AA" y "DL"
+filter(flights, carrier %in% c("UA", "AA", "DL"))
 ```
 
-Realiza un gráfico de dispersión de autopista versus cilindros.
+### Partieron en invierno del hemisferio sur (julio, agosto y septiembre)
 
 ```{r}
-
+filter(flights, month %in% c(7, 8, 9))
 ```
 
-¿Qué sucede cuando haces un gráfico de dispersión (scatterplot) de clase versus traccion?
+### Llegaron más de dos horas tarde, pero no salieron tarde
 
 ```{r}
-
+filter(flights, dep_delay <= 0 & arr_delay > 120)
 ```
 
-¿Por qué no es útil este gráfico?
+### Se retrasaron por lo menos una hora, pero repusieron más de 30 minutos en vuelo
 
 ```{r}
-
+filter(flights, dep_delay >= 60 & dep_delay - arr_delay > 30)
 ```
 
-PARTE 2: Mapeos estéticos
-
-¿Qué no va bien en este código? ¿Por qué hay puntos que no son azules?
+### Partieron entre la medianoche y las 6 a.m. (incluyente)
 
 ```{r}
- ggplot(data = millas) +
-   geom_point(mapping = aes(x = cilindrada, y = autopista, color = "blue"))
+filter(flights, dep_time %in% c(1:600) | dep_time == 2400 )
 ```
 
-```{r}
+## 2. Otra función de dplyr que es útil para usar filtros es between(). ¿Qué hace? ¿Puedes usarla para simplificar el código necesario para responder a los desafíos anteriores?
 
+```{r}
+# Esta función del paquete _dplyr_ permite abreviar la escritura de código que tiene esta estructura `x >= derecha & x <= izquierda` por `between(x, derecha, izquierda).
+
+# Ejemplo: Podemos reescribir el código para encontrar los vuelos que partieron en el invierno del hemisferio sur así:
+
+filter(flights, between(month, 7, 9))
 ```
 
-¿Qué variables en millas son categóricas? ¿Qué variables son continuas? (Pista: escribe ?millas para leer la documentación de ayuda para este conjunto de datos). ¿Cómo puedes ver esta información cuando ejecutas millas?
+## 3. ¿Cuántos vuelos tienen datos faltantes en horario_salida? ¿Qué otras variables tienen valores faltantes? ¿Qué representan estas filas?
 
 ```{r}
-
+# Se puede buscar datos faltantes con la función "is.na"
+filter(flights, is.na(dep_time))
 ```
 
-Asigna una variable continua a color, size, y shape. ¿Cómo se comportan estas estéticas de manera diferente para variables categóricas y variables continuas?
+### 4. ¿Por qué NA^0 no es faltante? ¿Por qué NA | TRUE no es faltante? ¿Por qué FALSE & NA no es faltante? ¿Puedes descubrir la regla general? (¡NA * 0 es un contraejemplo complicado!)
 
 ```{r}
-
+x <- c(NA) 
+is.na(x)
 ```
 
-¿Qué ocurre si asignas o mapeas la misma variable a múltiples estéticas?
+La función `is.na()` determina si falta un valor y devuelve un valor lógico `TRUE` en los casos en que es NA (Not Available). 
 
 ```{r}
-
+x^0
 ```
 
-¿Qué hace la estética stroke? ¿Con qué formas trabaja? (Pista: consulta ?geom_point)
+Dado que el NA podría tomar cualquier valor, es práctico pensar que cualquier número (aunque sea muy grande) a la potencia cero es igual a 1.
 
 ```{r}
-
+x | TRUE
 ```
 
-¿Qué ocurre si se asigna o mapea una estética a algo diferente del nombre de una variable, como aes(color = cilindrada < 5)?
+Es igual a TRUE pues el NA se entiende como un valor lógico (`TRUE` or `FALSE`) y por lógica proposicional `TRUE` | `TRUE`  y  `FALSE` | `TRUE` es siempre igual a `TRUE`.
 
 ```{r}
-
+x & FALSE
 ```
 
-Parte 3: Facetas
+Es igual a `TRUE` pues el NA se entiende como un valor lógico (`TRUE` or `FALSE`) y por lógica proposicional `TRUE`&`FALSE` y `FALSE`&`FALSE` es siempre `FALSE`.
 
-¿Qué ocurre si intentas separar en facetas una variable continua?
-
-```{r}
-
-```
-
-¿Qué significan las celdas vacías que aparecen en el gráfico generado usando facet_grid(traccion ~ cilindros)? ¿Cómo se relacionan con este gráfico?
+El contraejemplo a la regla general:
 
 ```{r}
-ggplot(data = millas) +
-  geom_point(mapping = aes(x = traccion, y = cilindros))
-```
-
-```{r}
-
-```
-
-¿Qué gráfica el siguiente código? ¿Qué hace?
-
-```{r}
-ggplot(data = millas) +
-  geom_point(mapping = aes(x = cilindrada, y = autopista)) +
-  facet_grid(traccion ~ .)
-
-ggplot(data = millas) +
-  geom_point(mapping = aes(x = cilindrada, y = autopista)) +
-  facet_grid(. ~ cilindros)
+x * 0
 ```
 
 ```{r}
-
+Inf*0
 ```
 
-Mira de nuevo el primer gráfico en facetas presentado en esta sección:
+En este contraejemplo puede ser útil pensar que el `NA` puede tomar cualquier valor, incluso podría ser un número muy grande; el cual al multiplicarse por cero nos da una indeterminación que `R` define como `NaN` (Not a Number). Por otro lado, si el `NA` fuese un valor pequeño, entonces `NA*0` sería igual a cero. Luego, es mejor pensar en `x*0` como un `NA` porque no sabemos en cual de los dos casos anteriores estamos.
+
+## Parte 2: Dplyr - arrange
+
+### 1. ¿Cómo podrías usar arrange() para ordenar todos los valores faltantes al comienzo? (Sugerencia: usa is.na()).
 
 ```{r}
-ggplot(data = millas) +
-  geom_point(mapping = aes(x = cilindrada, y = autopista)) +
-  facet_wrap(~ clase, nrow = 2)
+arrange(flights,desc(is.na(air_time)))
 ```
 
-```{r}
+### 2. Ordena vuelos para encontrar los vuelos más retrasados. Encuentra los vuelos que salieron más temprano.
 
+```{r}
+arrange(flights, desc(arr_delay))
 ```
 
-¿Cuáles son las ventajas de separar en facetas en lugar de aplicar una estética de color? ¿Cuáles son las desventajas? ¿Cómo cambiaría este balance si tuvieras un conjunto de datos más grande? - Lee ?facet_wrap. ¿Qué hace nrow? ¿Qué hace ncol? ¿Qué otras opciones controlan el diseño de los paneles individuales? ¿Por qué facet_grid() no tiene argumentos nrow y ncol? - Cuando usas facet_grid(), generalmente deberías poner la variable con un mayor número de niveles únicos en las columnas. ¿Por qué?
+### 3. Ordena vuelos para encontrar los vuelos más rápidos (que viajaron a mayor velocidad).
 
 ```{r}
-
+arrange(flights,desc(distance/air_time))
 ```
 
-Parte 4: Objetos geométricos
+### 4. ¿Cuáles vuelos viajaron más lejos? ¿Cuál viajó más cerca?
 
-¿Qué geom usarías para generar un gráfico de líneas? ¿Y para un diagrama de caja? ¿Y para un histograma? ¿Y para un gráfico de área?
+Vuelos que viajaron más lejos (considerando la distancia en millas entre aeropuertos):
 
 ```{r}
-
+arrange(flights,desc(distance))
 ```
 
-Ejecuta este código en tu mente y predice cómo se verá el output. Luego, ejecuta el código en R y verifica tus predicciones.
+Vuelos que viajaron más cerca (considerando la distancia en millas entre aeropuertos):
 
 ```{r}
-ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista, color = traccion)) +
-  geom_point() +
-  geom_smooth(se = FALSE)
+arrange(flights,distance)
 ```
 
-```{r}
+## Parte 3: Dplyr - select
 
+### 1. Haz una lluvia de ideas sobre tantas maneras como sea posible para seleccionar dep_time, dep_delay, arr_time, and arr_delay de flights.
+
+Una primera opción sería seleccionaras por su nombre:
+
+```{r}
+select(flights, dep_time, arr_delay, arr_time, dep_delay)
 ```
 
-¿Qué muestra show.legend = FALSE? ¿Qué pasa si lo quitas? ¿Por qué crees que lo utilizamos antes en el capítulo?
+También es útil en este caso utilizar la función `ends_with()`:
 
 ```{r}
-
+select(flights, ends_with("arr"),ends_with("delay"))
 ```
 
-¿Qué hace el argumento se en geom_smooth()?
+Y una manera adicional es usando la función `contains()`:
 
 ```{r}
-
+select(flights, contains("time"),contains("delay"))
 ```
 
-¿Se verán distintos estos gráficos? ¿Por qué sí o por qué no?
+### 2. ¿Qué sucede si incluyes el nombre de una variable varias veces en una llamada a select()?
+
+Al utilizar `select()` esta solo se considerará una vez:
 
 ```{r}
-ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista)) +
-  geom_point() +
-  geom_smooth()
-
-ggplot() +
-  geom_point(data = millas, mapping = aes(x = cilindrada, y = autopista)) +
-  geom_smooth(data = millas, mapping = aes(x = cilindrada, y = autopista))
+select(flights, dep_time, dep_time, dep_time)
 ```
 
-```{r}
+### 3. ¿Qué hace la función any_of()? ¡¿Por qué podría ser útil en conjunto con este vector?
 
+```{r}
+vars <- c ("year", "month", "day", "arr_delay", "dep_delay")
 ```
 
-Recrea el código R necesario para generar los siguientes gráficos:
+Con la función `one_of()` podemos indicar las variables que queremos seleccionar con el nombre del vector que las contiene.
+
+La función `one_of()` selecciona todas las variables que están en el vector `vars`:
 
 ```{r}
-
+select(flights, one_of(vars))
 ```
 
-```{r}
+Sin embargo, es posible también hacerlo de la siguiente forma (Siempre y cuando no exista una variable que se llame `vars` en el set de datos):
 
+```{r}
+select(flights, vars)
 ```
 
-```{r}
+## Parte 4: Dplyr - mutate
 
+### 1. Las variables horario_salida y salida_programada tienen un formato conveniente para leer, pero es difícil realizar cualquier cálculo con ellas porque no son realmente números continuos. Transfórmalas hacia un formato más conveniente como número de minutos desde la medianoche.
+
+Los datos de estas variables son de tal forma que las 6:59 AM toman el valor 659. Luego, el número de horas desde la media noche es:
+
+```{r}
+659%/%100 #division entera
+```
+La cantidad de minutos en esas 6 horas:
+
+```{r}
+659%/%100 *60
 ```
 
-```{r}
+Solo queda sumar los 59 minutos:
 
+```{r}
+659 %% 100 #resto
 ```
 
-```{r}
+Entonces, el número de minutos transcurridos desde las 00:00 hasta las 6:59 AM son:
 
+```{r}
+659 %/% 100 * 60 + 659 %% 100 
 ```
 
-```{r}
-
-```
-
-Parte 5: Gráficos estadísticos
-
-¿Cuál es el geom predeterminado asociado con stat_summary()? ¿Cómo podrías reescribir el gráfico anterior para usar esa función geom en lugar de la función stat?
+Sin embargo, la medianoche toma el valor 24:00 con lo cual el número de minutos desde la medianoche es 1440 en lugar de 0. Para resolver esto usamos nuevamente `%%`.
 
 ```{r}
-
-```
-
-¿Qué hace geom_col()? ¿En qué se diferencia de geom_bar()?
-
-```{r}
-
-```
-
-La mayoría de los geoms y las transformaciones estadísticas vienen en pares que casi siempre se usan en conjunto. Lee la documentación y haz una lista de todos los pares. ¿Qué tienen en común?
-
-```{r}
-
-```
-
-¿Qué variables calcula stat_smooth()? ¿Qué parámetros controlan su comportamiento?
-
-```{r}
-
-```
-
-En nuestro gráfico de barras de proporción necesitamos establecer group = 1. ¿Por qué? En otras palabras, ¿cuál es el problema con estos dos gráficos?
-
-```{r}
-
-```
-
-Parte 6: Ajuste de posición
-
-¿Cuál es el problema con este gráfico? ¿Cómo podrías mejorarlo?
-
-```{r}
-ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
-  geom_point()
+(659 %/% 100 * 60 + 659 %% 100) %% 1440 #mismo resultado anterior
+(2400 %/% 100 * 60 + 2400 %% 100) %% 1440 #cero minutos desde la medianoche
 ```
 
 ```{r}
-
+flights
+mutate(flights, salida_programada_min = (sched_dep_time %/% 100 * 60 + sched_dep_time %% 100) %% 1440)
+mutate(flights, horario_salida_min = (dep_time %/% 100 * 60 + dep_time %% 100) %% 1440)
 ```
 
-¿Qué parámetros de geom_jitter() controlan la cantidad de ruido?
+### 2. Compara tiempo_vuelo con horario_llegada - horario_salida. ¿Qué esperas ver? ¿Qué ves? ¿Qué necesitas hacer para arreglarlo?
+
+Lo que se espera es que `tiempo_vuelo` = `horario_llegada` - `horario_salida`.
+
+### 3. Compara horario_salida, salida_programada, y atraso_salida. ¿Cómo esperarías que esos tres números estén relacionados?
+
+`salida programada` + `atraso_salida` = `horario_salida`
+
+### 5. ¿Qué devuelve 1:3 + 1:10? ¿Por qué?
 
 ```{r}
-
+1:3 + 1:10
+class(1:3 + 1:10)
+# Devuelve un "intenger" ya que la longitud del objeto más largo no es un múltiplo de la longitud del objeto más corto.
 ```
 
-Compara y contrasta geom_jitter() con geom_count()
+### 6. ¿Qué funciones trigonométricas proporciona R?
 
-```{r}
-
-```
-
-¿Cuál es el ajuste de posición predeterminado de geom_boxplot()? Crea una visualización del conjunto de datos de millas que lo demuestre.
-
-```{r}
-
-```
-
-Parte 7: Sistema de coordenadas
-
-Convierte un gráfico de barras apiladas en un gráfico circular usando coord_polar().
-
-```{r}
-
-```
-
-¿Qué hace labs()? Lee la documentación.
-
-```{r}
-
-```
-
-¿Cuál es la diferencia entre coord_quickmap() y coord_map()?
-
-```{r}
-
-```
-
-¿Qué te dice la gráfica siguiente sobre la relación entre ciudad y autopista? ¿Por qué es coord_fixed() importante? ¿Qué hace geom_abline()?
-
-```{r}
-ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
-  geom_point() +
-  geom_abline() +
-  coord_fixed()
-```
+Seno en R, Coseno en R, Tangente en R y Cotangente en R
