@@ -16,41 +16,44 @@ millas
 
 PARTE 1: Ggplot base
 
-Ejecuta ggplot(data = millas). ¿Qué observas?
+Ejecuta `ggplot(data = millas)`. ¿Qué observas?
 
 ```{r}
-
+ggplot(data = millas)
 ```
 
-¿Cuántas filas hay en millas? ¿Cuántas columnas?
+Este código crea un gráfico en blanco. Solo se ve el fondo, pero no se dibuja nada sobre él, ya que las otras dos capas mínimas no se han especificado: variables de mapeo `aes()` y `geom_*()` que indica la representación gráfica a utilizar.
+
+¿Cuántas filas hay en `millas`? ¿Cuántas columnas?
 
 ```{r}
-
+nrow(millas)
+ncol(millas) 
 ```
 
-¿Qué describe la variable traccion? Lee la ayuda de ?millas para encontrar la respuesta.
+¿Qué describe la variable `traccion`? Lee la ayuda de `?millas` para encontrar la respuesta.
 
 ```{r}
-
+unique(millas$traccion)
 ```
 
-Realiza un gráfico de dispersión de autopista versus cilindros.
+Realiza un gráfico de dispersión de `autopista` versus `cilindros`.
 
 ```{r}
-
+ggplot(millas, aes(x = autopista, y = cilindros)) +
+  geom_point()
 ```
 
-¿Qué sucede cuando haces un gráfico de dispersión (scatterplot) de clase versus traccion?
+¿Qué sucede cuando haces un gráfico de dispersión (scatterplot) de `clase` versus `traccion`?
 
 ```{r}
-
+ggplot(millas, aes(x = clase, y = traccion)) +
+  geom_point()
 ```
 
 ¿Por qué no es útil este gráfico?
 
-```{r}
-
-```
+El gráfico no tiene tantos puntos.
 
 PARTE 2: Mapeos estéticos
 
@@ -61,57 +64,70 @@ PARTE 2: Mapeos estéticos
    geom_point(mapping = aes(x = cilindrada, y = autopista, color = "blue"))
 ```
 
-```{r}
+Se debe cambiar el orden de los parámetros para tener los puntos en color azul.
 
+```{r}
+ggplot(data = millas) +
+     geom_point(mapping = aes(x = cilindrada, y = autopista), color = "blue")
 ```
 
-¿Qué variables en millas son categóricas? ¿Qué variables son continuas? (Pista: escribe ?millas para leer la documentación de ayuda para este conjunto de datos). ¿Cómo puedes ver esta información cuando ejecutas millas?
+¿Qué variables en `millas` son categóricas? ¿Qué variables son continuas? (Pista: escribe `?millas` para leer la documentación de ayuda para este conjunto de datos). ¿Cómo puedes ver esta información cuando ejecutas `millas`?
+
+
+Variables categóricas: modelo, transmisión, tracción, combustible y clase.
+Variables continuas: cilindrada, cilindros, ciudad, autopista.
+
+Asigna una variable continua a `color`, `size`, y `shape`. ¿Cómo se comportan estas estéticas de manera diferente para variables categóricas y variables continuas?
 
 ```{r}
-
-```
-
-Asigna una variable continua a color, size, y shape. ¿Cómo se comportan estas estéticas de manera diferente para variables categóricas y variables continuas?
-
-```{r}
-
+ggplot(millas, aes(x = cilindrada, y = autopista, colour = ciudad)) +
+  geom_point()
 ```
 
 ¿Qué ocurre si asignas o mapeas la misma variable a múltiples estéticas?
 
-```{r}
+Se va generar un gráfico con información repitente.
 
+```{r}
+ggplot(millas, aes(x = cilindrada, y = autopista, colour = autopista, size = autopista)) +
+  geom_point()
 ```
 
-¿Qué hace la estética stroke? ¿Con qué formas trabaja? (Pista: consulta ?geom_point)
+¿Qué hace la estética `stroke`? ¿Con qué formas trabaja? (Pista: consulta `?geom_point`)
+
+Cambia el tamaño de los bordes de las formas.
 
 ```{r}
-
+ggplot(mtautos, aes(peso, millas)) +
+  geom_point(shape = 21, colour = "black", fill = "white", size = 5, stroke = 5)
 ```
 
-¿Qué ocurre si se asigna o mapea una estética a algo diferente del nombre de una variable, como aes(color = cilindrada < 5)?
+¿Qué ocurre si se asigna o mapea una estética a algo diferente del nombre de una variable, como `aes(color = cilindrada < 5)`?
 
 ```{r}
-
+ggplot(millas, aes(x = cilindrada, y = autopista, colour = cilindrada < 5)) +
+  geom_point()
 ```
 
 Parte 3: Facetas
 
 ¿Qué ocurre si intentas separar en facetas una variable continua?
 
-```{r}
+La variable continua es convertida a una variable categórica
 
-```
-
-¿Qué significan las celdas vacías que aparecen en el gráfico generado usando facet_grid(traccion ~ cilindros)? ¿Cómo se relacionan con este gráfico?
+¿Qué significan las celdas vacías que aparecen en el gráfico generado usando `facet_grid(traccion ~ cilindros)`? ¿Cómo se relacionan con este gráfico?
 
 ```{r}
 ggplot(data = millas) +
   geom_point(mapping = aes(x = traccion, y = cilindros))
 ```
 
-```{r}
+Son las mismas ubicaciones en el gráfico de dispersión de `autopista` y `ciudad` que no
+tienen gráfica.
 
+```{r}
+ggplot(data = millas) +
+  geom_point(mapping = aes(x = autopista, y = ciudad))
 ```
 
 ¿Qué gráfica el siguiente código? ¿Qué hace?
@@ -126,9 +142,7 @@ ggplot(data = millas) +
   facet_grid(. ~ cilindros)
 ```
 
-```{r}
-
-```
+`autopista ~ .` divide por los valores de `autopista` en el eje y.
 
 Mira de nuevo el primer gráfico en facetas presentado en esta sección:
 
@@ -138,23 +152,14 @@ ggplot(data = millas) +
   facet_wrap(~ clase, nrow = 2)
 ```
 
-```{r}
-
-```
-
-¿Cuáles son las ventajas de separar en facetas en lugar de aplicar una estética de color? ¿Cuáles son las desventajas? ¿Cómo cambiaría este balance si tuvieras un conjunto de datos más grande? - Lee ?facet_wrap. ¿Qué hace nrow? ¿Qué hace ncol? ¿Qué otras opciones controlan el diseño de los paneles individuales? ¿Por qué facet_grid() no tiene argumentos nrow y ncol? - Cuando usas facet_grid(), generalmente deberías poner la variable con un mayor número de niveles únicos en las columnas. ¿Por qué?
-
-```{r}
-
-```
-
 Parte 4: Objetos geométricos
 
 ¿Qué geom usarías para generar un gráfico de líneas? ¿Y para un diagrama de caja? ¿Y para un histograma? ¿Y para un gráfico de área?
 
-```{r}
-
-```
+Gráfico de líneas: `geom_line()`
+Diagrama de caja: `geom_boxplot()`
+Histograma: `geom_histogram()`
+Gráfico de área: `geom_area()`
 
 Ejecuta este código en tu mente y predice cómo se verá el output. Luego, ejecuta el código en R y verifica tus predicciones.
 
@@ -164,20 +169,29 @@ ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista, color = tracc
   geom_smooth(se = FALSE)
 ```
 
-```{r}
+El resultado es un diagrama de dispersión con `cilindrada` en el eje x, `autopista` en el eje y
+y los puntos pintados de acuerdo a `traccion`.
 
+¿Qué muestra `show.legend = FALSE`? ¿Qué pasa si lo quitas? ¿Por qué crees que lo utilizamos antes en el capítulo?
+
+`show.legend = FALSE` oculta la leyenda.
+
+```{r}
+ggplot(data = millas) +
+  geom_smooth(
+    mapping = aes(x = cilindrada, y = autopista, colour = traccion),
+    show.legend = FALSE
+  )
 ```
 
-¿Qué muestra show.legend = FALSE? ¿Qué pasa si lo quitas? ¿Por qué crees que lo utilizamos antes en el capítulo?
+¿Qué hace el argumento se en `geom_smooth()`?
+
+Agrega las bandas de error estándar a las líneas.
 
 ```{r}
-
-```
-
-¿Qué hace el argumento se en geom_smooth()?
-
-```{r}
-
+ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista, colour = traccion)) +
+  geom_point() +
+  geom_smooth(se = TRUE)
 ```
 
 ¿Se verán distintos estos gráficos? ¿Por qué sí o por qué no?
@@ -192,67 +206,100 @@ ggplot() +
   geom_smooth(data = millas, mapping = aes(x = cilindrada, y = autopista))
 ```
 
-```{r}
-
-```
+No se ven distintos. `geom_point()` y `geom_smooth()` toman los datos y estéticas de `ggplot()`
 
 Recrea el código R necesario para generar los siguientes gráficos:
 
 ```{r}
-
+ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista)) +
+   geom_point() +
+   geom_smooth(se = FALSE)
 ```
 
 ```{r}
-
+ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista)) +
+   geom_smooth(aes(group = traccion), se = FALSE) +
+   geom_point()
 ```
 
 ```{r}
-
+ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista, color = traccion)) +
+   geom_point() +
+   geom_smooth(se = FALSE)
 ```
 
 ```{r}
-
+ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista)) +
+   geom_point(aes(color = traccion)) +
+   geom_smooth(se = FALSE)
 ```
 
 ```{r}
-
+ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista)) +
+   geom_point(aes(color = traccion)) +
+   geom_smooth(aes(linetype = traccion), se = FALSE)
 ```
 
 ```{r}
-
+ggplot(data = millas, mapping = aes(x = cilindrada, y = autopista)) +
+   geom_point(size = 4, colour = "white") +
+   geom_point(aes(colour = traccion))
 ```
 
 Parte 5: Gráficos estadísticos
 
-¿Cuál es el geom predeterminado asociado con stat_summary()? ¿Cómo podrías reescribir el gráfico anterior para usar esa función geom en lugar de la función stat?
+¿Cuál es el geom predeterminado asociado con `stat_summary()`? ¿Cómo podrías reescribir el gráfico anterior para usar esa función geom en lugar de la función stat?
 
 ```{r}
-
+ggplot(data = diamantes) +
+  stat_summary(
+    mapping = aes(x = corte, y = profundidad),
+    fun.ymin = min,
+    fun.ymax = max,
+    fun.y = median
+  )
 ```
 
-¿Qué hace geom_col()? ¿En qué se diferencia de geom_bar()?
+¿Qué hace `geom_col()`? ¿En qué se diferencia de `geom_bar()`?
 
-```{r}
+`geom_col()` usa `stat_identity()`, que deja los datos sin transformar.
 
-```
+`geom_col()` espera que los datos contengan los valores de `x` y los valores de `y` que representan la altura de las columnas.
+
+`geom_bar()` usa `stat_bin()` y espera los valores de `x`.
 
 La mayoría de los geoms y las transformaciones estadísticas vienen en pares que casi siempre se usan en conjunto. Lee la documentación y haz una lista de todos los pares. ¿Qué tienen en común?
 
-```{r}
+| Geometría           | Estadístico         |
+|---------------------|---------------------|
+| `geom_bar()`        | `stat_count()`      |
+| `geom_bin2d()`      | `stat_bin_2d()`     |
+| `geom_boxplot()`    | `stat_boxplot()`    |
+| `geom_contour()`    | `stat_contour()`    |
+| `geom_count()`      | `stat_sum()`        |
+| `geom_density()`    | `stat_density()`    |
+| `geom_density_2d()` | `stat_density_2d()` |
+| `geom_hex()`        | `stat_hex()`        |
+| `geom_freqpoly()`   | `stat_bin()`        |
+| `geom_histogram()`  | `stat_bin()`        |
+| `geom_qq_line()`    | `stat_qq_line()`    |
+| `geom_qq()`         | `stat_qq()`         |
+| `geom_quantile()`   | `stat_quantile()`   |
+| `geom_smooth()`     | `stat_smooth()`     |
+| `geom_violin()`     | `stat_violin()`     |
+| `geom_sf()`         | `stat_sf()`         |
 
+En nuestro gráfico de barras de proporción necesitamos establecer `group = 1`. ¿Por qué? En otras palabras, ¿cuál es el problema con estos dos gráficos?
+
+```{r}
+ggplot(data = diamantes) +
+   geom_bar(mapping = aes(x = corte, y = ..prop..))
+   
+ggplot(data = diamantes) +
+   geom_bar(mapping = aes(x = corte, fill = color, y = ..prop..))
 ```
 
-¿Qué variables calcula stat_smooth()? ¿Qué parámetros controlan su comportamiento?
-
-```{r}
-
-```
-
-En nuestro gráfico de barras de proporción necesitamos establecer group = 1. ¿Por qué? En otras palabras, ¿cuál es el problema con estos dos gráficos?
-
-```{r}
-
-```
+El problema con estos gráficos es que las proporciones se calculan dentro de los grupos.
 
 Parte 6: Ajuste de posición
 
@@ -358,7 +405,18 @@ ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
   coord_fixed()
 ```
 
+La funcion `coord_fixed()` asegura que la linea que genera `geom_abline()` tenga un angulo de 45 grados. De este modo es mas facil comparar a partir de los casos en que los rendimientos en autopista y ciudad son iguales.
+
 ```{r}
 ?coord_fixed
 ?geom_abline
 ```
+
+```{r}
+ggplot(data = millas, mapping = aes(x = ciudad, y = autopista)) +
+  geom_point() +
+  geom_abline() +
+  coord_fixed()
+```
+
+Lo que podemos ver es que en todos los modelos el rendimiento en autopista es superior al rendmiento en ciudad.
