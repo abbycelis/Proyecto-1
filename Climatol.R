@@ -34,6 +34,7 @@ rosavent(windfr, 6, 2, 1, ang = 3*pi/8, col = rainbow(8), key = T, main = "Nivel
 ## Ejercicio 3. Convertir la data diaria de tmax en una data de medias mensuales. Posteriormente, homogeneizar dichos datos mensuales con una normalización por estandarización y gráficos de medias anuales y correcciones aplicadas en el análisis exploratorio de datos (utilizar dos decimales).
 
 setwd("C:/Users/abby_/OneDrive/Desktop/CICLO IV/PROGRAMACIÓN/CLIMATOL")
+data(tmax)
 
 write.table(dat, "Tmax_2001-2003.dat", row.names = F, col.names = F)
 write.table(est.c, "Tmax_2001-2003.est", row.names = F, col.names = F)
@@ -59,7 +60,7 @@ dahstat('Ptest', 1965, 2005, stat = "me", ndc = 2, vala = 1, estcol = c(1,2,5))
 
 tm <- expand.grid(x = seq(2.1,3.5,0.05), y = seq(39.1,40,0.001))
 coordinates(tm) <- ~x+y
-dahgrid('Ptest', 1965, 2005, grid = tp)
+dahgrid('Ptest', 1965, 2005, grid = tm)
 grid <- nc_open('C:/Users/abby_/OneDrive/Desktop/CICLO IV/PROGRAMACIÓN/CLIMATOL/Ptest_1965-2005_m.nc')
 print(grid)
 var <- ncvar_get(grid,'Ptest.m') 

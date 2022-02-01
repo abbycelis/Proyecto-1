@@ -1,0 +1,37 @@
+---
+title: "FINAL"
+author: "Abby Celis"
+date: "31/1/2022"
+output: github_document
+---
+
+# EXPLICACIÓN DE LA EXPOSICIÓN G5 (MAPVIEW)
+
+Empezamos explicando el objetivo principal de la librería `mapview` que es la creación de mapas interactivos mediante ciertas funciones.
+
+
+# Funciones
+
+`col.regions` paleta de colores
+
+`at` puntos de interrupción utilizados para colorear
+
+`map.types` los tipos de mapas de fondo -> por defecto, r mapviewGetOption("basemaps")
+
+`alpha.regions` la opacidad de los rellenos de ráster, polígono y puntos -> predeterminado 0.8para ráster, 0.6para polígonos y 0.9para puntos
+
+`legend`  si agregar una leyenda al gráfico
+
+`legend.opacity` opacidad de la leyenda
+
+`layer.name` el nombre de la capa que se utilizará para el trazado
+
+# También se mostró que por defecto tenemos el mapa:
+
+```{r}
+library(mapview)
+mapview()
+```
+
+# Luego se presentó unos pequeños ejemplos utilizando las funciones del paquete.
+
